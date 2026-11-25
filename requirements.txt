@@ -1,0 +1,3 @@
+# Necessário somente para carregar/consultar a amostra no PostgreSQL.
+# A interface revisor_corretor.py usa apenas a biblioteca padrão do Python.
+psycopg[binary]==3.2.13

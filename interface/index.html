@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Correção e revisão de extrações</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Ativar modo noturno" title="Ativar modo noturno">☾</button>
+      <section id="mode-screen" class="mode-screen">
+        <div class="mode-card">
+          <p class="eyebrow">Amostra Regra Ouro</p>
+          <h1>Como você quer trabalhar?</h1>
+          <p class="intro">Escolha um modo para começar. Você poderá trocar de modo a qualquer momento.</p>
+          <div class="mode-options">
+            <button class="mode-option correction" data-mode="correcao">
+              <span class="mode-icon">✎</span>
+              <strong>Correção</strong>
+              <small>Edite a descrição, selecione trechos e corrija os campos extraídos.</small>
+            </button>
+            <button class="mode-option review" data-mode="revisao">
+              <span class="mode-icon">✓</span>
+              <strong>Revisão</strong>
+              <small>Revise e edite o conjunto completo produzido durante a correção.</small>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="unavailable-screen" class="mode-screen hidden">
+        <div class="mode-card unavailable-card">
+          <span class="mode-icon">!</span>
+          <p class="eyebrow">Modo de revisão</p>
+          <h1>Nenhum arquivo de correção disponível</h1>
+          <p id="unavailable-message" class="intro">
+            Faça e salve ao menos uma correção antes de iniciar a revisão.
+          </p>
+          <div class="unavailable-actions">
+            <button id="start-correction" class="primary">Ir para correção</button>
+            <button id="back-to-modes" class="ghost">Voltar</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="workspace" class="workspace hidden">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Amostra Regra Ouro</p>
+            <h1 id="mode-title">Modo de correção</h1>
+          </div>
+          <div class="top-actions">
+            <span id="save-state" class="save-state">Pronto</span>
+            <button id="change-mode" class="ghost">Trocar modo</button>
+          </div>
+        </header>
+
+        <div class="progress-row">
+          <div class="progress-copy">
+            <span id="checkpoint-bubble" class="checkpoint-bubble" role="status"></span>
+            <strong id="counter">Registro 1 de 1</strong>
+            <span id="checkpoint-label" class="checkpoint-label">Checkpoint: registro 1</span>
+            <span id="progress-summary">0 com atenção</span>
+          </div>
+          <div class="progress-track">
+            <span id="progress-bar"></span>
+            <i id="checkpoint-marker" title="Posição do checkpoint"></i>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel description-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Texto de origem</p>
+                <h2>Descrição completa</h2>
+              </div>
+              <div class="panel-tools">
+                <button id="comment-button" class="ghost compact">Comentários</button>
+                <span id="edit-hint" class="hint">Somente seleção</span>
+              </div>
+            </div>
+            <p id="selection-instruction" class="instruction">
+              Clique em um campo colorido e selecione na descrição o trecho correspondente.
+            </p>
+            <p class="shortcut-help">
+              <strong>Atalhos:</strong> use as teclas <kbd>1</kbd> a <kbd>8</kbd>
+              da fileira superior ou do teclado numérico para selecionar os campos de extração.
+              A tecla <kbd>1</kbd> abre exclusivamente a lista de Categoria.
+              Depois de pressionar <kbd>1</kbd>, digite letras para filtrar as categorias; o filtro é limpo ao trocar de dado.
+              Pressione <kbd>9</kbd> e selecione um trecho da descrição para pesquisá-lo; pressione <kbd>9</kbd> novamente para cancelar.
+              Pressione novamente o número do campo ativo para desmarcá-lo.
+              Clique novamente no campo ativo ou pressione <kbd>Esc</kbd> para desmarcá-lo.
+              O <kbd>Enter</kbd> principal ou numérico avança para o próximo dado.
+              O botão direito abre as opções de restaurar e limpar o campo.
+            </p>
+            <div class="description-wrap">
+              <button id="review-comment-indicator" class="review-comment-indicator hidden" aria-label="Ver comentários" title="Passe o mouse para ver os comentários">⚠</button>
+              <div id="description" class="description" contenteditable="false" spellcheck="false"></div>
+              <div id="highlight-tooltip" class="highlight-tooltip hidden" role="tooltip"></div>
+              <aside id="comment-popover" class="comment-popover hidden">
+                <div class="comment-popover-heading">
+                  <strong>Comentários deste dado</strong>
+                  <button id="close-comments" class="icon-button" aria-label="Fechar comentários">×</button>
+                </div>
+                <div id="comment-list" class="comment-list"></div>
+                <form id="comment-form" class="comment-form">
+                  <textarea id="comment-text" rows="3" maxlength="5000" placeholder="Adicione um comentário…"></textarea>
+                  <button class="secondary compact" type="submit">Adicionar comentário</button>
+                </form>
+              </aside>
+            </div>
+            <p id="record-details" class="record-details"></p>
+          </section>
+
+          <section class="panel fields-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Entidades identificadas</p>
+                <h2>Campos da extração</h2>
+              </div>
+              <div class="field-actions">
+                <label class="check-mode-toggle" title="Destaca campos cujo valor difere da sugestão obtida pelo Chassi">
+                  <input id="check-mode" type="checkbox">
+                  <span>Modo checagem</span>
+                </label>
+                <button id="reset-field" class="ghost compact" disabled>Restaurar campo</button>
+                <button id="clear-field" class="ghost compact" disabled>Limpar campo</button>
+              </div>
+            </div>
+            <div id="fields" class="fields"></div>
+          </section>
+        </div>
+
+        <footer class="record-actions">
+          <div class="nav-actions">
+            <button id="first" class="secondary">⇤ Primeiro</button>
+            <button id="previous" class="secondary">← Anterior</button>
+          </div>
+          <div class="record-markers">
+            <button id="attention" class="warning">Despender atenção</button>
+            <button id="criteria-button" class="ghost criteria-button" aria-label="Critérios utilizados" title="Ver ou adicionar critérios">☷</button>
+            <aside id="criteria-popover" class="comment-popover criteria-popover hidden">
+              <div class="comment-popover-heading">
+                <strong>Critérios utilizados</strong>
+                <button id="close-criteria" class="icon-button" aria-label="Fechar critérios">×</button>
+              </div>
+              <div id="criteria-list" class="comment-list"></div>
+              <form id="criteria-form" class="comment-form">
+                <textarea id="criteria-text" rows="3" maxlength="5000" placeholder="Adicione um critério…"></textarea>
+                <button class="secondary compact" type="submit">Adicionar critério</button>
+              </form>
+            </aside>
+          </div>
+          <div class="nav-actions">
+            <button id="next" class="secondary">Próximo →</button>
+            <button id="last" class="secondary" disabled title="Disponível depois que você chegar manualmente ao último registro">Último ⇥</button>
+          </div>
+        </footer>
+        <p class="status-note">
+          “Despender atenção” destaca este registro em amarelo para a etapa de revisão.
+          O marcador não remove nem filtra nenhum registro.
+          Use →, Espaço ou Enter para avançar e ← para voltar.
+        </p>
+        <aside class="checkpoint-note">
+          <div class="checkpoint-copy">
+            <p><strong class="checkpoint-blue">Azul:</strong> 2 cliques para ativar — salva o maior registro visitado a partir deste ponto.</p>
+            <p><strong class="checkpoint-green">Verde:</strong> 1 clique para ativar — salva o registro atual como ponto de retorno.</p>
+          </div>
+          <div class="checkpoint-actions">
+            <button id="return-checkpoint" class="secondary" disabled>Voltar ao checkpoint</button>
+            <button id="checkpoint" class="primary">Corrigido até aqui</button>
+          </div>
+        </aside>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <div id="field-context-menu" class="field-context-menu hidden" role="menu">
+        <p id="context-field-name"></p>
+        <button id="context-reset" type="button" role="menuitem">Restaurar campo</button>
+        <button id="context-clear" type="button" role="menuitem">Limpar campo</button>
+      </div>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
