@@ -1038,9 +1038,8 @@ function renderComments() {
     });
   }
 
-  const correctionMode = state.mode === "correcao";
   $("#comment-form").classList.remove("hidden");
-  $("#comment-button").classList.toggle("hidden", !correctionMode);
+  $("#comment-button").classList.remove("hidden");
   $("#comment-button").textContent = state.comments.length
     ? `Comentários (${state.comments.length})`
     : "Comentários";
